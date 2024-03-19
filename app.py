@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
 import numpy as np
-
+import requests
 
 
 # Lista dos nomes dos arquivos CSV
@@ -24,8 +24,8 @@ results = pd.concat(dataframes, ignore_index=True)
 
 
 # Criar guias
-titulos_guias = ['Introdução', 'Modelagem dos Dados', 'DashBoard']
-guia1, guia2, guia3 = st.tabs(titulos_guias)
+titulos_guias = ['Introdução', 'Modelagem dos Dados', 'DashBoard', 'Análise', 'Conclusão']
+guia1, guia2, guia3, guia4, guia5 = st.tabs(titulos_guias)
 
 
 # Adicionar conteúdo a cada guia
@@ -189,6 +189,8 @@ with guia1:
             
 ##############################################################################    
     
+        ######## Gráfico 1 - Locais de Atendimento por Dia'
+
         with guia3:
             st.header('Dashboard PNAD-COVID 19')
             
@@ -234,6 +236,8 @@ with guia1:
             
 ################################################################################
 
+        ######### Gráfico 2 - Número de Pessoas que Procuraram Atendimento por Dia
+
             # Importar bibliotecas necessárias
             import plotly.graph_objs as go
 
@@ -272,6 +276,8 @@ with guia1:
             
 #######################################################################################
 
+        ########## Gráfico 3 - Proporção de Pessoas com Plano de Saúde
+
             # Calcular a quantidade total de pessoas com e sem plano de saúde
             proporcao_tem_plano = results.groupby('tem_plano').agg({'quantidade': 'sum'}).reset_index()
 
@@ -292,6 +298,8 @@ with guia1:
 ##############################################################################
 
             st.subheader("Internações")
+            
+        ########### Gráfico 4 - Relação entre Doenças Pré-existentes e Internações (Considerando a Quantidade)
       
             # Definir a lista de doenças
             doencas = ['diabetes', 'hipertensao', 'respiratoria', 'sem_doenca', 'cardiaca', 'depressao', 'cancer']
@@ -326,6 +334,8 @@ with guia1:
 
 ####################################################################
 
+        ######### Gráfico 5 - Percentual de Internações por UF
+
             # Calcular o total de pessoas por UF
             total_pessoas_por_uf = results.groupby('sigla_uf').agg({'quantidade': 'sum'}).reset_index()
             total_pessoas_por_uf.columns = ['sigla_uf', 'total_count']
@@ -354,6 +364,8 @@ with guia1:
 
 ###################################################################
 
+        ######### Gráfico 6 - Número de Internações por Idade (Histograma)
+
             # Filtrar os registros de internações
             internacoes = results[results['internou'] == 'Sim']
 
@@ -378,6 +390,8 @@ with guia1:
             
                  
 ##############################################################################
+
+        ########### Gráfico 7 Percentual de Internações por Faixa de Idade
 
             # Calcular o total de internações em todo o DataFrame
             total_internacoes = internacoes['quantidade'].sum()
@@ -405,10 +419,11 @@ with guia1:
             st.markdown('<hr style="border-top: 2px solid blue;">', unsafe_allow_html=True)
             
 ###############################################################################
-            
-            ###### Gráfico 1
 
+                 
             st.subheader("Distribuição Geográfica / Procuraram Ajuda Médica")
+            
+        ########## Gráfico 8 - Proporção de pessoas que procuraram ajuda médica por faixa etária
 
             # Defina os bins e labels
             bins = [0, 20, 40, 60, 80, 100]
@@ -444,7 +459,7 @@ with guia1:
 
     #######################################################################################
             
-            ###### Gráfico 2
+        ######### Gráfico 9 - Número de pessoas que procuraram ajuda médica por UF
 
             
             # Agrupe os dados por 'sigla_uf' e calcule a soma da coluna 'quantidade' para cada estado
@@ -460,6 +475,8 @@ with guia1:
             st.plotly_chart(fig)
             
 ######################################################################################
+
+        ########### Gráfico 10 - Percentual de Pessoas que procuraram ajuda médica por UF
 
             # Calcular o total de pessoas por UF
             total_pessoas_por_uf = results.groupby('sigla_uf').agg({'quantidade': 'sum'}).reset_index()
@@ -492,7 +509,7 @@ with guia1:
 
             st.subheader('Análise da Renda Média')
 
-            ##### Gráfico 3
+        ######### Gráfico 11 - Renda Média por Raça
 
             
             # Agrupe os dados por raça e calcule a média da renda média total para cada raça
@@ -512,7 +529,7 @@ with guia1:
     #############################################################################        
 
                     
-            ##### Gráfico 4
+        ######## Gráfico 12 - Renda Média por Mês e Sexo
     
             # Converta a coluna 'ano_mes' para o formato de data
             results['ano_mes'] = pd.to_datetime(results['ano_mes'])
@@ -535,7 +552,7 @@ with guia1:
     
     #########################################################################################      
             
-            ##### Gráfico 5
+        ######## Gráfico 13 - Renda Média por Faixa Etária
 
             # Primeiro, certifique-se de que 'ano_mes' esteja no formato correto. Se não estiver, converta-o.
             results['ano_mes'] = pd.to_datetime(results['ano_mes'])
@@ -565,7 +582,7 @@ with guia1:
 
             st.subheader('Sexo e Cor/Raça')       
 
-            ### Gráfico 6
+        ######## Gráfico 14 - Comparação dos sintomas relatados entre homens e mulheres
 
             # Filtrando apenas as colunas relevantes
             df = results[['sexo', 'febre', 'tosse', 'dor_garganta', 'perda_olfato_paladar', 'quantidade']]
@@ -593,7 +610,7 @@ with guia1:
 
     #################################################
 
-            ##### Gráfico 7
+        ############ Gráfico 15 - Proporção de pessoas por grupo racial que procuraram ajuda'
 
             # Agrupe os dados por raça e conte o número de pessoas que procuraram ajuda médica
             procurou_ajuda_por_raca = results.groupby('raca')['procurou_ajuda'].value_counts(normalize=True).unstack()
@@ -633,6 +650,8 @@ with guia1:
             st.markdown('<hr style="border-top: 2px solid blue;">', unsafe_allow_html=True)
 
             st.subheader('Resultado e Sintomas')
+            
+        ############ Gráfico 16 - Comparação de Dados em Percentual
 
             # Calcular o total de respostas para cada categoria
             total_procurou_ajuda = results['procurou_ajuda'].eq('Sim').sum()
@@ -672,6 +691,8 @@ with guia1:
 
 ######################################################################################
 
+        ############ Gráfico 17 - Proporção de Pessoas por Procura de Ajuda e Sintomas
+
             sintomas = ['febre', 'tosse', 'dor_garganta', 'perda_olfato_paladar']
             procurou_ajuda_values = ['Sim', 'Não']  # Definindo explicitamente os valores
 
@@ -700,7 +721,7 @@ with guia1:
 
     #########################################################################
 
-            ######### Gráfico 9
+        ######### Gráfico 18 - Quantidade de Pessoas por Procura de Ajuda e Sintomas
     
             sintomas = ['febre', 'tosse', 'dor_garganta', 'perda_olfato_paladar']
             procurou_ajuda_values = ['Sim', 'Não']  # Definindo explicitamente os valores
@@ -729,6 +750,8 @@ with guia1:
            
 #############################################################################
             
+        ##### Gráfico - 19 Relação entre resultado de testes e home office
+            
             # Filtrando apenas as colunas relevantes
             df = results[['resultado_testes', 'fez_home_office', 'quantidade']]
 
@@ -756,3 +779,80 @@ with guia1:
 
             # Exiba o gráfico
             st.plotly_chart(fig)
+            
+            
+###################################################################
+
+            with guia4:
+                st.header('Análise')
+                
+                st.markdown("""
+                            
+                No primeiro gráfico, podemos ver que a maior demanda de atendimentos acontece em UBS, com hospitais públicos e privados ocupando a 3ª e 4ª posição respectivamente, com um comportamento bastante estável nos 3 meses analisados. Importante frisar que os 3 meses escolhidos foram num momento em que, no Brasil, começamos a ver o final da primeira onda de COVID, com uma diminuição de número de casos e mortes, como pode ser encontrado aqui: https://g1.globo.com/bemestar/coronavirus/noticia/2020/12/02/mortes-por-covid-tiveram-queda-menor-em-novembro-do-que-em-outubro-indicam-secretarias-de-saude.ghtml
+
+                Porém, em nossos dados, vemos uma aparente estabilidade durante os 3 meses no segundo gráfico, com variações de busca por atendimento na casa dos 10% entre um mês e outro, como pode ser visto no segundo gráfico.
+
+                Importante considerar também que, segundo a nossa amostra, por volta de ¼ da população tem plano de saúde (como visto no terceiro gráfico), o que irá delimitar também a quantidade de pessoas que buscaram atendimento em hospitais e postos de atendimento da rede privada.
+
+
+                Já no quarto gráfico, analisamos quais doenças pré-existentes podem estar mais relacionadas a internações por covid. Percebemos que precisamos ficar mais atentos a pessoas com Hipertensão e Câncer, ao chegarem ao nosso atendimento.
+
+                Pensando em regiões do Brasil, construímos o gráfico 4 que nos mostra que, percentualmente falando, dois estados da região centro-oeste concentraram um número maior de internações. Essa é uma visão importante para entender onde devemos concentrar maiores recursos. Já no gráfico 9 percebemos que a busca por atendimento também é maior percentualmente em Goiás. Olhando para números absolutos, os estados da região sudoeste apresentam um maior número de atendimento, como visto no oitavo gráfico.
+
+                Nos gráficos 5 e 6, percebemos que a faixa etária que demanda mais atenção gira em torno dos 60 aos 80 anos. Já no gráfico 7 vemos que não há uma diferença significativa no comportamento das pessoas de diferentes faixas-etárias com relação à busca por atendimento ao aparecimento de sintomas.
+
+                Quando fazemos uma análise das rendas médias das pessoas entrevistadas (gráficos 10, 11 e 12), percebemos que pessoas de cor branca tem uma média salarial maior, enquanto mulheres apresentam uma renda ligeiramente maior, dado que contraria outras pesquisas que se concentram a estudar isso e pode dizer mais sobre a nossa amostra do que sobre a população em geral. Outro dado interessante é a concentração de renda maior em pessoas de maior faixa etária, o que também parece ser um comportamento da amostra diferente do que é observado em outros locais.
+
+                Pensando em sintomas, mulheres relataram mais sintomas nos 3 meses analisados, enquanto o sintoma mais presente foi a tosse (gráfico 13).
+
+                Com relação a grupos raciais e busca por ajuda, não vemos uma diferença significativa entre os entrevistados, como visto no gráfico 14.
+
+                O sintoma que faz mais pessoas buscarem ajuda foram a perda de olfato e paladar e a febre percentualmente(gráfico 15), porém os sintomas que mais apareceram foram tosse e dor de garganta (gráfico 16).
+
+                Olhando para o último gráfico, percebemos que a maior parte das pessoas relataram estar em home office, e a maioria dos resultados de teste foram negativo, inconclusivos ou sem resultado.
+                    """)
+                
+                with guia5:
+                    st.header('Conclusão')
+                    
+                    st.markdown(""" 
+                    
+                    Quais seriam as principais ações que o hospital deverá tomar em caso de um novo surto de COVID-19?
+                    
+                    Em caso de um novo surto, seria importante realizar as mesmas análises com dados mais atuais para fazer as seguintes medidas usando-os como base:
+                    
+                    Reforço das Medidas de Prevenção e Controle de Infecções:
+                    
+                    Implementação de medidas rigorosas de higiene, como lavagem frequente das mãos e uso de equipamentos de proteção individual (EPIs) adequados.
+                    Garantia de estoque adequado de EPIs para os funcionários e pacientes.
+                    Aumento da frequência de limpeza e desinfecção de superfícies e áreas comuns.
+                    
+                    Triagem e Testagem:
+                    
+                    Estabelecimento de procedimentos eficazes de triagem de pacientes e visitantes para identificar potenciais casos de COVID-19.
+                    Realização de testes diagnósticos em larga escala para identificar casos positivos e rastrear contatos próximos.
+                    
+                    Isolamento e Quarentena:
+                   
+                    Isolamento imediato de pacientes com sintomas suspeitos ou confirmados de COVID-19.
+                    Recomendação de quarentena para pessoas que tiveram contato próximo com casos confirmados.
+                    
+                    Capacidade Hospitalar:
+                    
+                    Monitoramento constante da capacidade hospitalar, incluindo leitos de UTI, respiradores e suprimentos médicos.
+                    Preparação para aumentar a capacidade de atendimento, se necessário, e coordenar com outras instituições de saúde da região.
+                                     
+                    Comunicação e Educação Pública:
+                    
+                    Comunicação transparente e regular com funcionários, pacientes e comunidade sobre as medidas de prevenção, sintomas da doença e orientações atualizadas das autoridades de saúde.
+                    Educação pública sobre a importância do distanciamento social, uso de máscaras e outras práticas de prevenção.
+                    
+                    Colaboração com Autoridades de Saúde Pública:
+                    Colaboração estreita com as autoridades de saúde pública locais, estaduais e nacionais para coordenar a resposta ao surto.
+                    Compartilhamento de dados e informações relevantes para auxiliar no monitoramento e controle da disseminação da doença.
+                    
+                    Suporte Psicossocial:
+                    
+                    Oferta de suporte psicológico e emocional para funcionários, pacientes e familiares afetados pela pandemia.
+                    Acesso a recursos de saúde mental e assistência social para lidar com o estresse e ansiedade relacionados à situação.
+                        """)
