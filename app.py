@@ -4,11 +4,27 @@ import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
 import numpy as np
+import requests
 
-results = pd.read_csv('results.csv')
+
+# Lista dos nomes dos arquivos CSV
+nomes_arquivos = ['base1.csv', 'base2.csv', 'base3.csv', 'base4.csv', 'base5.csv', 'base6.csv', 'base7.csv']
+
+# Lista para armazenar os DataFrames individuais
+dataframes = []
+
+# Iterar sobre cada arquivo CSV, ler e adicionar ao DataFrame
+for nome_arquivo in nomes_arquivos:
+    df = pd.read_csv(nome_arquivo)
+    dataframes.append(df)
+
+# Concatenar os DataFrames em um único DataFrame, empilhando-os verticalmente
+results = pd.concat(dataframes, ignore_index=True)
+
+
 
 # Criar guias
-titulos_guias = ['Introduação', 'Modelagem dos Dados', 'DashBoard']
+titulos_guias = ['Introdução', 'Modelagem dos Dados', 'DashBoard']
 guia1, guia2, guia3 = st.tabs(titulos_guias)
 
 
@@ -394,9 +410,6 @@ with guia1:
 
             st.subheader("Distribuição Geográfica / Procuraram Ajuda Médica")
 
-            # Carregar os dados
-            results = pd.read_csv('results.csv')  # Substitua 'results.csv' pelo nome do seu arquivo CSV
-
             # Defina os bins e labels
             bins = [0, 20, 40, 60, 80, 100]
             labels = ['0-20', '21-40', '41-60', '61-80', '81-100']
@@ -433,9 +446,7 @@ with guia1:
             
             ###### Gráfico 2
 
-            # Carregar os dados
-            results = pd.read_csv('results.csv')  # Substitua 'results.csv' pelo nome do seu arquivo CSV
-
+            
             # Agrupe os dados por 'sigla_uf' e calcule a soma da coluna 'quantidade' para cada estado
             df_grouped = results.groupby('sigla_uf')['quantidade'].sum().reset_index()
 
@@ -483,9 +494,7 @@ with guia1:
 
             ##### Gráfico 3
 
-            # Carregar os dados
-            results = pd.read_csv('results.csv')  # Substitua 'results.csv' pelo nome do seu arquivo CSV
-
+            
             # Agrupe os dados por raça e calcule a média da renda média total para cada raça
             df_grouped = results.groupby('raca')['renda_media_total'].mean().reset_index()
 
