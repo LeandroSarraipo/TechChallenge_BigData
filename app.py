@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
 import numpy as np
-import requests
+
 
 
 # Lista dos nomes dos arquivos CSV
